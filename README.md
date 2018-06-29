@@ -1,4 +1,4 @@
-## Go Ethereum
+## Go Ethereum (My Geth)
 
 Official golang implementation of the Ethereum protocol.
 
