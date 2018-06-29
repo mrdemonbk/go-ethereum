@@ -31,15 +31,16 @@ import (
 	"github.com/ethereum/go-ethereum/core/state"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/ethereum/go-ethereum/params"
-	set "gopkg.in/fatih/set.v0"
+	"gopkg.in/fatih/set.v0"
 )
 
 // Ethash proof-of-work protocol constants.
 var (
-	FrontierBlockReward    *big.Int = big.NewInt(5e+18) // Block reward in wei for successfully mining a block
-	ByzantiumBlockReward   *big.Int = big.NewInt(3e+18) // Block reward in wei for successfully mining a block upward from Byzantium
-	maxUncles                       = 2                 // Maximum number of uncles allowed in a single block
-	allowedFutureBlockTime          = 15 * time.Second  // Max time from current time allowed for blocks, before they're considered future blocks
+	// With LBT Network, we disable block reward by set these values to zero
+	frontierBlockReward    *big.Int = big.NewInt(0)    // Block reward in wei for successfully mining a block
+	byzantiumBlockReward   *big.Int = big.NewInt(0)    // Block reward in wei for successfully mining a block upward from Byzantium
+	maxUncles                       = 2                // Maximum number of uncles allowed in a single block
+	allowedFutureBlockTime          = 15 * time.Second // Max time from current time allowed for blocks, before they're considered future blocks
 )
 
 // Various error messages to mark blocks invalid. These should be private to
@@ -336,7 +337,8 @@ func calcDifficultyByzantium(time uint64, parent *types.Header) *big.Int {
 
 	// (2 if len(parent_uncles) else 1) - (block_timestamp - parent_timestamp) // 9
 	x.Sub(bigTime, bigParentTime)
-	x.Div(x, big9)
+	//x.Div(x, big9)
+	x.Div(x, big2) //At LBT Network, we want to reduce block time to 1 second.
 	if parent.UncleHash == types.EmptyUncleHash {
 		x.Sub(big1, x)
 	} else {
